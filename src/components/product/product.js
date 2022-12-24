@@ -28,7 +28,7 @@ const Product = () => {
   const keyword=params.keyword;
 
   const [currentPage,setCurrentPage] = useState(1);
-  const [price,setPrice] = useState([0,25000])
+  const [price,setPrice] = useState([0,300000])
   const [category,setCategory] = useState("")
   const [ratings,setRatings] = useState(0)
 
@@ -42,11 +42,13 @@ const Product = () => {
     setPrice(newPrice);
   }
 
+
   useEffect(()=>{
     if(productResponse.error){
       alert.error(productResponse.error);
       dispatch(clearErrors());
     }
+    // console.log(productResponse.productCount);
     dispatch(getProduct(keyword,currentPage,price,category,ratings));
   },[dispatch,alert,productResponse.error,keyword,currentPage,price,category,ratings])
   return (
@@ -54,11 +56,13 @@ const Product = () => {
       {productResponse.loading ? <Loader/> : 
       <Fragment>
         <MetaData title="Products--UnLimitIt"/>
+        <div className="mainProduct">
+
           <h2 className="productsHeading">Products</h2>
           <div className="products">
             {productResponse.products && productResponse.products.map((product)=>(
               <ProductCard key={product._id} product={product}/>
-            ))}
+              ))}
           </div>
 
             <div className="filterBox">
@@ -70,7 +74,7 @@ const Product = () => {
               aria-label="Small"
               aria-labelledby="range-slider"
               min={0}
-              max={25000}
+              max={300000}
               />
 
             <Typography>Categories</Typography>
@@ -98,12 +102,12 @@ const Product = () => {
                 aria-labelledby="continuous-slider"
                 min={0}
                 max={5}
-              />
+                />
             </fieldset>
 
             </div>
           {
-          productResponse.productCount && productResponse.productCount>0 && productResponse.resultPerPage < productResponse.productCount?
+            productResponse.productCount && productResponse.productCount>0 && productResponse.resultPerPage < productResponse.productCount ?
           <div className="paginationBox">
             <Pagination activePage={currentPage}
             itemsCountPerPage={productResponse.resultPerPage}
@@ -119,6 +123,7 @@ const Product = () => {
             activeLinkClass="pageLinkActive"/>
            </div>:null
           }
+      </div>
       </Fragment>}
     </>
   )
